@@ -1,0 +1,105 @@
+your.package.name
+├── ui                      // Presentation Layer: UI components, Contracts, and ViewModels
+│   ├── common              // Reusable UI components, base classes, extensions for UI
+│   │   ├── BaseActivity.kt
+│   │   ├── BaseFragment.kt
+│   │   ├── MviViewModel.kt     // Base ViewModel for MVI (handles state, intent, effect streams)
+│   │   └── UiExtensions.kt
+│   │
+│   ├── auth                // Feature: User Authentication
+│   │   ├── AuthActivity.kt
+│   │   ├── LoginFragment.kt
+│   │   ├── AuthContract.kt     // Defines AuthState, AuthIntent, AuthEffect
+│   │   └── AuthViewModel.kt    // Processes AuthIntent, holds/updates AuthState, emits AuthEffect
+│   │
+│   ├── home                // Feature: Main application screen
+│   │   ├── HomeFragment.kt
+│   │   ├── HomeContract.kt     // Defines HomeState, HomeIntent, HomeEffect
+│   │   └── HomeViewModel.kt    // Processes HomeIntent, holds/updates HomeState, emits HomeEffect
+│   │
+│   └── notifications       // Feature: UI related to notifications (e.g., notification list)
+│       ├── NotificationListFragment.kt
+│       ├── NotificationListContract.kt // Defines NotificationListState, Intent, Effect
+│       └── NotificationListViewModel.kt
+│
+├── data                    // Data Layer: Responsible for providing and managing data
+│   ├── model               // Data Models (Kotlin data classes, POJOs)
+│   │   ├── User.kt
+│   │   ├── Product.kt
+│   │   ├── Notification.kt
+│   │   └── RemoteConfig.kt
+│   │
+│   ├── local               // Local Data Sources (Room Database)
+│   │   ├── dao
+│   │   │   ├── UserDao.kt
+│   │   │   └── NotificationDao.kt
+│   │   │
+│   │   ├── entity
+│   │   │   ├── UserEntity.kt
+│   │   │   └── NotificationEntity.kt
+│   │   │
+│   │   └── AppDatabase.kt
+│   │
+│   ├── remote              // Remote Data Sources (APIs, Firebase services)
+│   │   ├── api
+│   │   │   ├── AuthApiService.kt
+│   │   │   └── ProductApiService.kt
+│   │   │
+│   │   ├── dtos
+│   │   │   ├── LoginRequest.kt
+│   │   │   └── ProductDto.kt
+│   │   │
+│   │   ├── firebase
+│   │   │   ├── FirebaseAuthService.kt
+│   │   │   └── FirebaseRemoteConfigService.kt
+│   │   │
+│   │   └── interceptor
+│   │
+│   └── repository          // Repositories (abstract data sources, single source of truth)
+│       ├── AuthRepository.kt
+│       ├── ProductRepository.kt
+│       ├── NotificationRepository.kt
+│       └── RemoteConfigRepository.kt
+│
+├── domain                  // Domain Layer (Optional but recommended for complex business logic)
+│   ├── model               // Domain Models (business logic representation, often same as data.model)
+│   │   ├── User.kt
+│   │   ├── Notification.kt
+│   │   └── FeatureFlag.kt
+│   │
+│   └── usecase             // Use Cases / Interactors (single responsibility business logic operations)
+│       ├── auth
+│       │   ├── LoginUseCase.kt
+│       │   └── GetCurrentUserUseCase.kt
+│       │
+│       ├── notifications
+│       │   ├── GetNotificationsUseCase.kt
+│       │   └── MarkNotificationAsReadUseCase.kt
+│       │
+│       └── config
+│           ├── FetchAndActivateRemoteConfigUseCase.kt
+│           └── GetFeatureFlagUseCase.kt
+│
+├── di                      // Dependency Injection (e.g., Hilt/Koin modules)
+│   ├── AppModule.kt
+│   ├── DatabaseModule.kt
+│   ├── NetworkModule.kt
+│   ├── FirebaseModule.kt
+│   ├── RepositoryModule.kt
+│   └── UseCaseModule.kt
+│
+├── service                 // Android Services (background tasks, not directly tied to UI lifecycle)
+│   ├── FirebaseMessageService.kt
+│   └── SyncDataService.kt
+│
+├── util                    // Utility classes (helpers, extensions, constants, common logic)
+│   ├── Constants.kt
+│   ├── NotificationHelper.kt
+│   ├── NetworkUtils.kt
+│   ├── DateUtils.kt
+│   ├── MviExtensions.kt    // Extensions for MVI (e.g., for StateFlow, SharedFlow)
+│   └── Extensions.kt
+│
+├── App.kt
+├── MainActivity.kt
+└── AndroidManifest.xml

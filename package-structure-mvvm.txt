@@ -1,0 +1,100 @@
+your.package.name
+├── ui                      // Presentation Layer: UI components and their ViewModels
+│   ├── common              // Reusable UI components, base classes, extensions for UI
+│   │   ├── BaseActivity.kt
+│   │   ├── BaseFragment.kt
+│   │   └── UiExtensions.kt
+│   │
+│   ├── auth                // Feature: User Authentication
+│   │   ├── AuthActivity.kt
+│   │   ├── LoginFragment.kt
+│   │   └── AuthViewModel.kt    // Manages authentication UI state and logic
+│   │
+│   ├── home                // Feature: Main application screen
+│   │   ├── HomeFragment.kt
+│   │   └── HomeViewModel.kt    // Manages home screen UI state and data
+│   │
+│   └── notifications       // Feature: UI related to notifications (e.g., notification list)
+│       ├── NotificationListFragment.kt
+│       └── NotificationViewModel.kt
+│
+├── data                    // Data Layer: Responsible for providing and managing data
+│   ├── model               // Data Models (Kotlin data classes, POJOs)
+│   │   ├── User.kt             // Represents a user (can be used across layers)
+│   │   ├── Product.kt
+│   │   ├── Notification.kt     // Model for a notification
+│   │   └── RemoteConfig.kt     // Model for remote config values
+│   │
+│   ├── local               // Local Data Sources (Room Database)
+│   │   ├── dao             // Data Access Objects (interfaces for Room queries)
+│   │   │   ├── UserDao.kt
+│   │   │   └── NotificationDao.kt // For persisting notifications
+│   │   │
+│   │   ├── entity          // Room Entities (data classes mapped to database tables)
+│   │   │   ├── UserEntity.kt
+│   │   │   └── NotificationEntity.kt
+│   │   │
+│   │   └── AppDatabase.kt  // Room Database class (singleton provider)
+│   │
+│   ├── remote              // Remote Data Sources (APIs, Firebase services)
+│   │   ├── api             // Retrofit API service interfaces
+│   │   │   ├── AuthApiService.kt
+│   │   │   └── ProductApiService.kt
+│   │   │
+│   │   ├── dtos            // Data Transfer Objects (for Retrofit requests/responses)
+│   │   │   ├── LoginRequest.kt
+│   │   │   └── ProductDto.kt
+│   │   │
+│   │   ├── firebase        // Firebase-specific services
+│   │   │   ├── FirebaseAuthService.kt      // Wraps Firebase Auth SDK calls
+│   │   │   └── FirebaseRemoteConfigService.kt // Wraps Firebase Remote Config SDK calls
+│   │   │
+│   │   └── interceptor     // OkHttp interceptors (e.g., AuthInterceptor)
+│   │
+│   └── repository          // Repositories (abstract data sources, single source of truth)
+│       ├── AuthRepository.kt               // Manages user authentication data (local/remote/Firebase)
+│       ├── ProductRepository.kt            // Manages product data (local/remote)
+│       ├── NotificationRepository.kt       // Manages notification data (local/remote)
+│       └── RemoteConfigRepository.kt       // Manages remote config data
+│
+├── domain                  // Domain Layer (Optional but recommended for complex business logic)
+│   ├── model               // Domain Models (business logic representation, often same as data.model)
+│   │   ├── User.kt
+│   │   ├── Notification.kt
+│   │   └── FeatureFlag.kt  // Domain specific representation of a remote config feature
+│   │
+│   └── usecase             // Use Cases / Interactors (single responsibility business logic operations)
+│       ├── auth            // Auth-related use cases
+│       │   ├── LoginUseCase.kt
+│       │   └── GetCurrentUserUseCase.kt
+│       │
+│       ├── notifications   // Notification-related use cases
+│       │   ├── GetNotificationsUseCase.kt
+│       │   └── MarkNotificationAsReadUseCase.kt
+│       │
+│       └── config          // Remote Config related use cases
+│           ├── FetchAndActivateRemoteConfigUseCase.kt
+│           └── GetFeatureFlagUseCase.kt
+│
+├── di                      // Dependency Injection (e.g., Hilt/Koin modules)
+│   ├── AppModule.kt             // Provides application-wide singletons (Context, Dispatchers)
+│   ├── DatabaseModule.kt         // Provides AppDatabase and DAO instances
+│   ├── NetworkModule.kt          // Provides Retrofit, OkHttpClient, API service instances
+│   ├── FirebaseModule.kt         // Provides FirebaseAuth, FirebaseRemoteConfig instances
+│   ├── RepositoryModule.kt       // Provides repository instances
+│   └── UseCaseModule.kt          // Provides use case instances
+│
+├── service                 // Android Services (background tasks, not directly tied to UI lifecycle)
+│   ├── FirebaseMessageService.kt // Handles incoming FCM messages for notifications
+│   └── SyncDataService.kt        // Example: Background service to sync data
+│
+├── util                    // Utility classes (helpers, extensions, constants, common logic)
+│   ├── Constants.kt
+│   ├── NotificationHelper.kt     // Manages Notification Channels, building/displaying notifications
+│   ├── NetworkUtils.kt
+│   ├── DateUtils.kt
+│   └── Extensions.kt
+│
+├── App.kt                  // Application class (for global setup, e.g., DI initialization)
+├── MainActivity.kt         // Main entry point Activity (can be placed in ui.common or ui if not feature-specific)
+└── AndroidManifest.xml
