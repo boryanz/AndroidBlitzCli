@@ -11,9 +11,19 @@ import (
 )
 
 func main() {
-	var isMvi = true
+
+	config := ParseConfigJson()
+	replacements := map[string]string{
+		"{{COMPILE_SDK_PLACEHOLDER}}":         fmt.Sprintf("%d", config.AppBuildGradle.COMPILE_SDK),
+		"{{PACKAGE_NAME_PLACEHOLDER}}":        fmt.Sprintf("\"%s\"", config.AppBuildGradle.PACKAGE_NAME),
+		"{{TARGET_SDK_PLACEHOLDER}}":          fmt.Sprintf("%d", config.AppBuildGradle.TARGET_SDK),
+		"{{MIN_SDK_PLACEHOLDER}}":             fmt.Sprintf("%d", config.AppBuildGradle.MINIMUM_SDK),
+		"{{VERSION_NAME_PLACEHOLDER}}":        fmt.Sprintf("\"%s\"", config.AppBuildGradle.APP_VERSION),
+		"{{IS_MINIFIED_ENABLED_PLACEHOLDER}}": fmt.Sprintf("%t", config.AppBuildGradle.IS_MINIFIED_ENABLED),
+	}
+
 	repoURL := "https://github.com/boryanz/DroidStarterTemplate.git"
-	dest := filepath.Join(os.Getenv("HOME"), "Desktop", "droid-starter-new")
+	dest := filepath.Join(os.Getenv("HOME"), "droidstarter")
 
 	os.RemoveAll(dest)
 	cloneGithubRepo(dest, repoURL)
@@ -26,19 +36,17 @@ func main() {
 	fmt.Println("Content of the build.gradle.template.txt")
 	fmt.Println(string(content))
 
-	updatedBuildGradle := strings.ReplaceAll(string(content), "{{COMPILE_SDK_PLACEHOLDER}}", "35")
-	updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, "{{PACKAGE_NAME_PLACEHOLDER}}", "\"com.boryans.droidstarter\"")
-	updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, "{{TARGET_SDK_PLACEHOLDER}}", "35")
-	updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, "{{MIN_SDK_PLACEHOLDER}}", "25")
-	updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, "{{VERSION_NAME_PLACEHOLDER}}", "\"3.3.0\"")
-	updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, "{{IS_MINIFIED_ENABLED_PLACEHOLDER}}", "true")
-	fmt.Println(string(updatedBuildGradle))
+	updatedBuildGradle := string(content)
+	for placeholder, value := range replacements {
+		updatedBuildGradle = strings.ReplaceAll(updatedBuildGradle, placeholder, value)
+		fmt.Println(value)
+	}
 
 	overwriteBuildGradleFile(dest, updatedBuildGradle)
 	deleteBuildGradleTemplate(dest)
 
 	//Second part
-	if isMvi {
+	if !config.Architecture.IS_MVVM {
 		//copy theme package and place into presentation
 		var themeFilePath = filepath.Join(dest, "app", "src", "main", "java", "com", "android", "droidstartertemplatemvvm", "ui", "theme")
 		var themeOutputPath = filepath.Join(dest, "app", "src", "main", "java", "com", "android", "droidstartermvi", "presentation", "theme")
