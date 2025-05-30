@@ -6,8 +6,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/droidstarter-cli/internal/androidops"
 	"github.com/droidstarter-cli/internal/config"
 	"github.com/droidstarter-cli/internal/fileops"
+
 	"github.com/go-git/go-git/v5"
 )
 
@@ -44,8 +46,8 @@ func main() {
 		fmt.Println(value)
 	}
 
-	fileops.OverwriteBuildGradleFile(rootPath, updatedBuildGradle)
-	fileops.DeleteBuildGradleTemplate(rootPath)
+	androidops.OverwriteBuildGradleFile(rootPath, updatedBuildGradle)
+	androidops.DeleteBuildGradleTemplate(rootPath)
 
 	//Second part - this needs to enum from config
 	if !config.Architecture.IS_MVVM {
@@ -68,44 +70,10 @@ func main() {
 	/**
 	Remove all features which are set false in the config file.
 	**/
-	removeAllDisabledFeatures(config, rootPath, relativePath)
+	androidops.RemoveAllDisabledFeatures(config, rootPath, relativePath)
 
 	//move features package into architecture (MVVM or MVI package)
-	moveEnabledFeaturesIntoPackages(config, rootPath, relativePath)
-
-}
-
-func moveEnabledFeaturesIntoPackages(config config.Config, rootPath string, relativePath string) {
-	if config.Architecture.IS_MVVM {
-		var featuresPath = filepath.Join(rootPath, relativePath, "features")
-		var featuresOutput = filepath.Join(rootPath, relativePath, "droidstartermvvm", "features")
-		fileops.CopyDir(featuresPath, featuresOutput)
-		fileops.RemoveAll(featuresPath)
-	} else {
-		var featuresPath = filepath.Join(rootPath, relativePath, "features")
-		var featuresOutput = filepath.Join(rootPath, relativePath, "droidstartermvi", "features")
-		fileops.CopyDir(featuresPath, featuresOutput)
-		fileops.RemoveAll(featuresPath)
-	}
-}
-
-func removeAllDisabledFeatures(config config.Config, rootPath string, relativePath string) {
-	if !config.NotificationFeature.ENABLED {
-		var notificationsPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "notifications")
-		fileops.RemoveAll(notificationsPackage)
-	}
-	if config.FirebaseAuthFeature.ENABLED {
-		var firebasePackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "firebaseauth")
-		fileops.RemoveAll(firebasePackage)
-	}
-	if config.RoomFeature.ENABLED {
-		var roomPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features")
-		fileops.RemoveAll(roomPackage)
-	}
-	if config.RetrofitFeature.ENABLED {
-		var retrofitPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "retrofit")
-		fileops.RemoveAll(retrofitPackage)
-	}
+	androidops.MoveEnabledFeaturesIntoPackages(config, rootPath, relativePath)
 }
 
 func cloneGithubRepo(dest string, repoUrl string) {
