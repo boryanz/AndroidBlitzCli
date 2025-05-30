@@ -9,5 +9,17 @@
     },
     "architecture": {
         "is_mvvm": false
+    },
+    "notification_feature": {
+        "enabled": true
+    },
+    "room_feature": {
+        "enabled": true
+    },
+    "retrofit_feature": {
+        "enabled": true
+    },
+    "firebase_auth_feature": {
+        "enabled": false
     }
 }

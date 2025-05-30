@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -8,8 +8,12 @@ import (
 )
 
 type Config struct {
-	AppBuildGradle AppBuildGradle `json:"app_build_gradle"`
-	Architecture   Architecture   `json:"architecture"`
+	AppBuildGradle      AppBuildGradle      `json:"app_build_gradle"`
+	Architecture        Architecture        `json:"architecture"`
+	NotificationFeature NotificationFeature `json:"notification_feature"`
+	RoomFeature         RoomFeature         `json:"room_feature"`
+	RetrofitFeature     RetrofitFeature     `json:"retrofit_feature"`
+	FirebaseAuthFeature FirebaseAuthFeature `json:"firebase_auth_feature"`
 }
 
 type AppBuildGradle struct {
@@ -21,12 +25,27 @@ type AppBuildGradle struct {
 	IS_MINIFIED_ENABLED bool   `json:"is_minified_enabled"`
 }
 
+type NotificationFeature struct {
+	ENABLED bool `json:"enabled"`
+}
+type RoomFeature struct {
+	ENABLED bool `json:"enabled"`
+}
+
+type RetrofitFeature struct {
+	ENABLED bool `json:"enabled"`
+}
+
+type FirebaseAuthFeature struct {
+	ENABLED bool `json:"enabled"`
+}
+
 type Architecture struct {
 	IS_MVVM bool `json:"is_mvvm"`
 }
 
 func ParseConfigJson() Config {
-	jsonFile, err := os.Open("config.json")
+	jsonFile, err := os.Open("internal/config/config.json")
 	if err != nil {
 		fmt.Printf("Parsing of config.json failed %v: ", err)
 		os.Exit(1)
