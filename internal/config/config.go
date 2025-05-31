@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-type Config struct {
+type AppConfig struct {
 	AppBuildGradle      AppBuildGradle      `json:"app_build_gradle"`
 	Architecture        Architecture        `json:"architecture"`
 	NotificationFeature NotificationFeature `json:"notification_feature"`
@@ -44,7 +44,7 @@ type Architecture struct {
 	IS_MVVM bool `json:"is_mvvm"`
 }
 
-func ParseConfigJson() Config {
+func ParseConfigJson() AppConfig {
 	jsonFile, err := os.Open("internal/config/config.json")
 	if err != nil {
 		fmt.Printf("Parsing of config.json failed %v: ", err)
@@ -54,7 +54,7 @@ func ParseConfigJson() Config {
 	defer jsonFile.Close()
 
 	byteValue, _ := io.ReadAll(jsonFile)
-	var config Config
+	var config AppConfig
 
 	if err := json.Unmarshal(byteValue, &config); err != nil {
 		fmt.Printf("Unmarshalling error: %v\n", err)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/droidstarter-cli/internal/config"
 	"github.com/droidstarter-cli/internal/fileops"
@@ -29,7 +30,7 @@ func DeleteBuildGradleTemplate(destRoot string) error {
 	return nil
 }
 
-func MoveEnabledFeaturesIntoPackages(config config.Config, rootPath string, relativePath string) {
+func MoveEnabledFeaturesIntoPackages(config config.AppConfig, rootPath string, relativePath string) {
 	if config.Architecture.IS_MVVM {
 		var featuresPath = filepath.Join(rootPath, relativePath, "features")
 		var featuresOutput = filepath.Join(rootPath, relativePath, "droidstartermvvm", "features")
@@ -43,7 +44,7 @@ func MoveEnabledFeaturesIntoPackages(config config.Config, rootPath string, rela
 	}
 }
 
-func RemoveAllDisabledFeatures(config config.Config, rootPath string, relativePath string) {
+func RemoveAllDisabledFeatures(config config.AppConfig, rootPath string, relativePath string) {
 	if !config.NotificationFeature.ENABLED {
 		var notificationsPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "notifications")
 		fileops.RemoveAll(notificationsPackage)
@@ -53,11 +54,32 @@ func RemoveAllDisabledFeatures(config config.Config, rootPath string, relativePa
 		fileops.RemoveAll(firebasePackage)
 	}
 	if config.RoomFeature.ENABLED {
-		var roomPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features")
+		var roomPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "room")
 		fileops.RemoveAll(roomPackage)
 	}
 	if config.RetrofitFeature.ENABLED {
 		var retrofitPackage = filepath.Join(rootPath, relativePath, "droidstartermvi", "features", "retrofit")
 		fileops.RemoveAll(retrofitPackage)
+	}
+}
+
+func ParseJsonAndReplaceBuildGradlePlaceholders(updatedBuildGradle string) {
+	var configJsonMap = parseConfigJsonValues()
+	var buildGradleFileContent = string(updatedBuildGradle)
+	for placeholder, value := range configJsonMap {
+		buildGradleFileContent = strings.ReplaceAll(buildGradleFileContent, placeholder, value)
+		fmt.Println(value)
+	}
+}
+
+func parseConfigJsonValues() map[string]string {
+	config := config.ParseConfigJson()
+	return map[string]string{
+		"{{COMPILE_SDK_PLACEHOLDER}}":         fmt.Sprintf("%d", config.AppBuildGradle.COMPILE_SDK),
+		"{{PACKAGE_NAME_PLACEHOLDER}}":        fmt.Sprintf("\"%s\"", config.AppBuildGradle.PACKAGE_NAME),
+		"{{TARGET_SDK_PLACEHOLDER}}":          fmt.Sprintf("%d", config.AppBuildGradle.TARGET_SDK),
+		"{{MIN_SDK_PLACEHOLDER}}":             fmt.Sprintf("%d", config.AppBuildGradle.MINIMUM_SDK),
+		"{{VERSION_NAME_PLACEHOLDER}}":        fmt.Sprintf("\"%s\"", config.AppBuildGradle.APP_VERSION),
+		"{{IS_MINIFIED_ENABLED_PLACEHOLDER}}": fmt.Sprintf("%t", config.AppBuildGradle.IS_MINIFIED_ENABLED),
 	}
 }
