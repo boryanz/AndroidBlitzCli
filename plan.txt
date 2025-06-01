@@ -1,0 +1,8 @@
+Before copying to the new package structure:
+- generate all package structures needed from the config in the old path.
+
+After:
+1. create a new package structure using package name from config.
+2. get old path from last package in default package name.
+3. create a new path for last package name from the config.
+4. iterate over all directories recursively and copy dir from old path to the new one.

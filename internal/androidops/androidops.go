@@ -63,9 +63,9 @@ func RemoveAllDisabledFeatures(config config.AppConfig, rootPath string, relativ
 	}
 }
 
-func ParseJsonAndReplaceBuildGradlePlaceholders(updatedBuildGradle string) {
+func ParseJsonAndReplaceBuildGradlePlaceholders(buildGradleContent string) {
 	var configJsonMap = parseConfigJsonValues()
-	var buildGradleFileContent = string(updatedBuildGradle)
+	var buildGradleFileContent = string(buildGradleContent)
 	for placeholder, value := range configJsonMap {
 		buildGradleFileContent = strings.ReplaceAll(buildGradleFileContent, placeholder, value)
 		fmt.Println(value)
